@@ -1,0 +1,104 @@
+/* Same as before for basic styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1b1b1b; /* Dark theme */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container {
+    width: 60%; /* Increased width */
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-window {
+    height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    border-bottom: 1px solid #444;
+    background-color: #2f3137;
+}
+
+#messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    word-wrap: break-word;
+    white-space: pre-wrap; /* Allow newlines in response */
+    overflow-wrap: break-word; /* Ensures long words break properly */
+}
+
+.user {
+    align-self: flex-end;
+    background-color: #444;
+    color: white;
+    max-width: 80%; /* User message width */
+    border-radius: 10px;
+}
+
+.bot {
+    align-self: flex-start;
+    background-color: #444;
+    color: white;
+    max-width: 80%; /* Bot message width */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    border-radius: 10px;
+}
+
+.input-box {
+    display: flex;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+#user-input {
+    background-color: #333;
+    color: white;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+
+#send-button {
+    background-color: #FD5E5E;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.chat-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #FD5E5E;
+}
+
+h1 {
+    text-align: center;
+}
+
+.file-upload-icon {
+    cursor: pointer;
+    color: white;
+    font-size: 22px;
+    margin-left: 10px;
+}

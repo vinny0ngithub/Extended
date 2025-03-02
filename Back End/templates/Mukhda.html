@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chatbot</title>
+    <!-- <link rel="stylesheet" href="tevar.css"> -->
+    <!-- Bootstrap for icon -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* Same as before for basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1b1b1b;
+            /* Dark theme */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 60%;
+            /* Increased width */
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-window {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            background-color: #2f3137;
+        }
+
+        #messages {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            /* Allow newlines in response */
+            overflow-wrap: break-word;
+            /* Ensures long words break properly */
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: #444;
+            color: white;
+            max-width: 80%;
+            /* User message width */
+            border-radius: 10px;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background-color: #444;
+            color: white;
+            max-width: 80%;
+            /* Bot message width */
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            border-radius: 10px;
+        }
+
+        .input-box {
+            display: flex;
+            padding: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        #user-input {
+            background-color: #333;
+            color: white;
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #000000;
+            border-radius: 5px;
+        }
+
+        .Button {
+            background-color: #FD5E5E;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .chat-header {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: #FD5E5E;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* File Upload */
+        .file-upload-container {
+            position: relative;
+        }
+
+        .file-upload-label {
+            display: flex;
+            padding: 5px 10px;
+            justify-content: center;
+            /* Center content horizontally */
+            align-items: center;
+            /* Center content vertically */
+            background-color: #FD5E5E;
+            /* Green */
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .file-upload-icon {
+            margin-right: 5px;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        /* Optional: Add hover effects */
+        #send-button:hover {
+            background-color: #d34949;
+        }
+
+        .file-upload-label:hover {
+            background-color: #d34949;
+        }
+
+
+        /* File Preview*/
+        #file-preview {
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            overflow: auto;
+            max-height: 200px;
+            display: none;
+            /* Initially hide the preview area */
+        }
+
+        #file-preview img {
+            max-width: 100px;
+            height: auto;
+            max-height: 100px;
+            /* Limit image height */
+        }
+
+        #file-preview video {
+            max-width: 100px;
+            height: auto;
+            max-height: 100px;
+            /* Limit video height */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <h1>Chad Bot 🗿</h1>
+        </header>
+        <div id="chat-window">
+            <div id="messages"></div>
+        </div>
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="Type your message..." autofocus>
+            <button id="send-button" class="Button">Send</button>
+
+            <div class="file-upload-container">
+                <label for="file-input" class="file-upload-label">
+                    <span class="file-upload-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm1 15H5V5h10v12zm3-7c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1z"
+                                fill="#fff" />
+                        </svg>
+                    </span>
+                    <span class="file-upload-text">Image Upload</span>
+                </label>
+                <input type="file" id="file-input" accept="image/*,video/*,audio/* .pdf, .doc, .docx" multiple hidden />
+                <div id="file-preview" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add event listener for the send button
+        document.getElementById("send-button").addEventListener("click", sendMessage);
+
+        // Add event listener for the Enter key
+        document.getElementById("user-input").addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        // Function to send the message
+        function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            const file = fileInput.files[0];
+
+            if (userInput.trim() !== "") {
+                // Display user message
+                displayMessage(userInput, "user");
+                document.getElementById("user-input").value = "";
+
+                // Create FormData object
+                const formData = new FormData();
+
+                formData.append("message", userInput);
+                if (file) {
+                    formData.append("file", file);
+                }
+
+                fetchResponse(formData);
+                fileInput.value = ''; // Clear the selected file
+                filePreview.innerHTML = ''; // Clear the preview content
+                filePreview.style.display = 'none'; // Hide the preview area
+            }
+        }
+
+        // Function to display the message
+        function displayMessage(text, sender) {
+            const messages = document.getElementById("messages");
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = text; // Use innerHTML to render HTML content
+            messages.appendChild(messageDiv);
+            requestAnimationFrame(() => {
+                messages.scrollTop = messages.scrollHeight;
+            });
+        }
+
+        // Function to fetch the response from the backend
+        async function fetchResponse(formData) {
+            const response = await fetch("http://localhost:5000/chat", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await response.json();
+            displayMessage(data.reply, "bot");
+        }
+
+
+        // File Handling
+        const fileInput = document.getElementById('file-input');
+        const filePreview = document.getElementById('file-preview');
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+
+            if (file) {
+                filePreview.style.display = 'block';
+
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        filePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    filePreview.innerHTML = `<video controls src="${URL.createObjectURL(file)}" width="200"></video>`;
+                } else {
+                    filePreview.innerHTML = `<p>Preview not available for this file type.</p>`;
+                }
+            } else {
+                filePreview.style.display = 'none'; // Hide the preview if no file is selected
+            }
+        });
+
+    </script>
+</body>
+
+</html>
